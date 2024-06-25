@@ -97,7 +97,7 @@ inline vec3 cross(const vec3& u, const vec3& v) {
     return vec3(u[1]*v[2] - u[2]*v[1], u[2]*v[0] - u[0]*v[2], u[0]*v[1] - u[1]*v[0]);
 }
 
-inline vec3 uint_vector(const vec3& v) {
+inline vec3 unit_vector(const vec3& v) {
     return v / v.length();
 }
 
@@ -111,7 +111,7 @@ inline vec3 random_in_unit_sphere() {
 }
 
 inline vec3 random_unit_vector() {
-    return uint_vector(vec3::random(-1, 1));
+    return unit_vector(vec3::random(-1, 1));
 }
 
 inline vec3 random_on_hemisphere(const vec3& normal){

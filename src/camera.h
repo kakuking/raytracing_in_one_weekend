@@ -79,7 +79,7 @@ class camera {
                 return color(0, 0, 0);
             }
 
-            vec3 unit_direction = uint_vector(r.direction());
+            vec3 unit_direction = unit_vector(r.direction());
             auto a = 0.5*(unit_direction.y() + 1.0);
             return color((1-a)*color(1, 1, 1) + a*color(0.5, 0.7, 1.0));
         }

@@ -43,7 +43,7 @@ class metal: public material {
 
         bool scatter(const ray& ray_in, const hit_record& rec, color& attenuation, ray& scattered) const override {
             vec3 reflected = reflect(ray_in.direction(), rec.normal);
-            reflected = uint_vector(reflected) + fuzz * random_unit_vector();
+            reflected = unit_vector(reflected) + fuzz * random_unit_vector();
             scattered = ray(rec.p, reflected);
             attenuation = albedo;
             return (dot(scattered.direction(), rec.normal) > 0);
@@ -67,7 +67,7 @@ class dielectric: public material {
             attenuation = color(1.0, 1.0, 1.0);
             double ri = rec.front_face ? (1.0/refractive_index): refractive_index;
 
-            vec3 unit_direction = uint_vector(r_in.direction());
+            vec3 unit_direction = unit_vector(r_in.direction());
 
             double cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0);
             double sin_theta = sqrt(1.0 - cos_theta*cos_theta);
