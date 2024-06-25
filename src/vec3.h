@@ -48,7 +48,7 @@ class vec3 {
 };
 
 using point3 = vec3;
-using color3 = vec3;
+// using color3 = vec3;
 
 inline std::ostream& operator<<(std::ostream& out, const vec3& v) {
     return out << v[0] << ' ' << v[1] << ' ' << v[2];
