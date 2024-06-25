@@ -53,5 +53,8 @@
         "variant": "cpp",
         "vector": "cpp",
         "algorithm": "cpp"
+    },
+    "files.watcherExclude": {
+        "**/target": true
     }
 }
