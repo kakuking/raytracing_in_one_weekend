@@ -33,6 +33,8 @@ class camera {
 
             scanlines_per_thread = image_height/num_threads;
 
+            std::clog << "Scanline per thread: " << scanlines_per_thread << '\n';
+
             for (int t = 0; t < num_threads; t++)
             {
                 int start = t * scanlines_per_thread;
@@ -45,7 +47,7 @@ class camera {
                 thread.join();
             }
 
-            std::clog << "Render done, saving to file       \n";
+            std::clog << "\nRender done, saving to file       \n";
             
             for(auto& color: image){
                 write_color(std::cout, color);

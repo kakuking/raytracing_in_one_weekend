@@ -8,6 +8,11 @@ Final render from the book, with 100 samples per pixel and a recursion depth of 
 
 Suggested improvements that could be made:
 
-- [ ] Add hittable support for objects that are not parametric, such as polygonal meshes
+- [x] Add hittable support for objects that are not parametric, such as polygonal meshes
 - [x] Add multithreading to speed up process
 
+Uses the ![Möller–Trumbore Algorithm](https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm#C++_implementation) to find ray-triangle intersection
+Currently uses brute force to go through all triangles
+
+Further improvements that could be made
+- [ ] Better algorithm to check intersection with mesh, beyond brute force

@@ -139,3 +139,7 @@ inline vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
 
     return r_out_perp + r_out_parallel;
 }
+
+inline vec3 piecewise_multiply(const vec3& u, const vec3& v) {
+    return vec3(u[0]*v[0], u[1]*v[1], u[2]*v[2]);
+}
