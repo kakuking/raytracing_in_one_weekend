@@ -153,7 +153,7 @@ class camera {
         void process_scanline(int start, int end, int thread_index) {
             for (int j = start; j < end; j++) {
                 // std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
-                std::clog << "\nThread " << thread_index << "Processing scanline: " << (j - start + 1) << ' ' << std::flush;
+                // std::clog << "\nThread " << thread_index << "Processing scanline: " << (j - start + 1) << ' ' << std::flush;
                 for (int i = 0; i < image_width; i++) { 
                     color pixel_color(0, 0, 0);
                     for(int sample = 0; sample < samples_per_pixel; sample++){
