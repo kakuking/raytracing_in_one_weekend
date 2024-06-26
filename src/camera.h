@@ -4,6 +4,8 @@
 #include "hittable.h"
 #include "material.h"
 
+#include <thread>
+
 class camera {
     public:
         double aspect_ratio = 1.0;
@@ -19,24 +21,35 @@ class camera {
         double defocus_angle = 0;
         double focus_dist = 10;
 
-        void render(const hittable& world){
+        int num_threads = 5;
+
+        camera(hittable& w): world(w) {}
+
+        void render(const hittable& in_world){
             initialize();
+            world = in_world;
 
             std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
-            for (int j = 0; j < image_height; j++) {
-                std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
-                for (int i = 0; i < image_width; i++) { 
-                    color pixel_color(0, 0, 0);
-                    for(int sample = 0; sample < samples_per_pixel; sample++){
-                        ray r = get_ray(i, j);
-                        pixel_color += ray_color(r, max_depth, world);
-                    }           
+            scanlines_per_thread = image_height/num_threads;
 
-                    write_color(std::cout, pixel_color * pixel_samples_scale);
-                }
+            for (int t = 0; t < num_threads; t++)
+            {
+                int start = t * scanlines_per_thread;
+                int end = (t == num_threads - 1) ? image_height : (t + 1) * scanlines_per_thread;
+
+                threads.emplace_back(&camera::process_scanline, this, start, end, t);
+            }
+            
+            for (auto& thread: threads) {
+                thread.join();
             }
 
+            std::clog << "Render done, saving to file       \n";
+            
+            for(auto& color: image){
+                write_color(std::cout, color);
+            }
             std::clog << "\rDone.                 \n";
         }
 
@@ -50,6 +63,13 @@ class camera {
         vec3 u, v, w;
         vec3 defocus_disc_u;
         vec3 defocus_disc_v;
+
+        // multithreading
+        int scanlines_per_thread;
+        std::vector<std::thread> threads;
+        std::vector<color> image;
+
+        hittable& world;
 
         void initialize(){
             image_height = int(image_width/aspect_ratio);
@@ -85,6 +105,9 @@ class camera {
 
             defocus_disc_u = u * defocus_radius;
             defocus_disc_v = v * defocus_radius;
+
+            // Multithreading
+            image.resize(image_width * image_height);
         }
 
         color ray_color(const ray& r, int depth, const hittable& world) const {
@@ -124,5 +147,24 @@ class camera {
 
         vec3 sample_square() const {
             return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+        }
+
+        // Multithreading
+        void process_scanline(int start, int end, int thread_index) {
+            for (int j = start; j < end; j++) {
+                // std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+                std::clog << "\nThread " << thread_index << "Processing scanline: " << (j - start + 1) << ' ' << std::flush;
+                for (int i = 0; i < image_width; i++) { 
+                    color pixel_color(0, 0, 0);
+                    for(int sample = 0; sample < samples_per_pixel; sample++){
+                        ray r = get_ray(i, j);
+                        pixel_color += ray_color(r, max_depth, world);
+                    }           
+
+                    // write_color(std::cout, pixel_color * pixel_samples_scale);
+                    size_t index = j * image_width + i;
+                    image[index] = pixel_color * pixel_samples_scale;
+                }
+            }
         }
 };
