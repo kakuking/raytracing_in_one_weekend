@@ -33,6 +33,8 @@ class camera {
 
             scanlines_per_thread = image_height/num_threads;
 
+            std::clog << "Scanline per thread: " << scanlines_per_thread << '\n';
+
             for (int t = 0; t < num_threads; t++)
             {
                 int start = t * scanlines_per_thread;
@@ -45,7 +47,7 @@ class camera {
                 thread.join();
             }
 
-            std::clog << "Render done, saving to file       \n";
+            std::clog << "\nRender done, saving to file       \n";
             
             for(auto& color: image){
                 write_color(std::cout, color);
@@ -153,7 +155,7 @@ class camera {
         void process_scanline(int start, int end, int thread_index) {
             for (int j = start; j < end; j++) {
                 // std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
-                // std::clog << "\nThread " << thread_index << "Processing scanline: " << (j - start + 1) << ' ' << std::flush;
+                std::clog << "\nThread " << thread_index << "Processing scanline: " << (j - start + 1) << ' ' << std::flush;
                 for (int i = 0; i < image_width; i++) { 
                     color pixel_color(0, 0, 0);
                     for(int sample = 0; sample < samples_per_pixel; sample++){
