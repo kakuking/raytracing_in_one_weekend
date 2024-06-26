@@ -1,6 +1,7 @@
 #pragma once
 
 #include "rtweekend.h"
+#include "hittable.h" 
 
 using coefficients = vec3;
 
@@ -29,7 +30,7 @@ class triangle{
             return vertex3(p, normal);
         }
 
-        std::optional<vertex3> ray_triangle_intersection(const ray& r){
+        std::optional<hit_record> ray_triangle_intersection(const ray& r) const {
             // if ray is parallel return -1
             if (is_ray_parallel(r))
                 return {};
@@ -40,11 +41,18 @@ class triangle{
             if (!coeff_opt.has_value())
                 return {};
             
+            // contains (t, u, v) where t is for ray, u and v are for triangle
             coefficients coeff = coeff_opt.value();
 
-            point3 p = r.at(coeff[0]);
+            // Need to derive first coeff from the other 2
+            hit_record rec;
+            vertex3 hit_p = barycentric_at(coefficients(1-coeff[1]-coeff[2], coeff[1], coeff[2]));
 
-            // vec3 normal = 
+            rec.p = hit_p.position;
+            rec.t = coeff[0];
+            rec.set_face_normal(r, hit_p.normal);
+
+            return rec;
         }
 
     private:
@@ -52,16 +60,16 @@ class triangle{
             return area_of_triangle(v1, v2, v3);
         }
 
-        bool is_ray_parallel(const ray& r) {
+        bool is_ray_parallel(const ray& r) const {
             return dot(cross(v2.position - v1.position, v3.position-v2.position), r.direction()) == 0;
         }
 
-        std::optional<coefficients> solve_linear_equations(const ray& r) {
+        std::optional<coefficients> solve_linear_equations(const ray& r) const {
             vec3 AB = v2.position - v1.position;
             vec3 AC = v3.position - v1.position;
             vec3 ray_cross_AC = cross(r.direction(), AC);
 
-            double det = dot(-r.direction(), ray_cross_AC);
+            double det = dot(AB, ray_cross_AC);
 
             double inv_det = 1.0/det;
 
@@ -78,7 +86,6 @@ class triangle{
                 return {};
 
             float t = inv_det * dot(AC, s_cross_AB);
-
             if(t > 0.001) {
                 return coefficients(t, u, v);
             }

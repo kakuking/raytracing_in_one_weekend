@@ -3,4 +3,4 @@ cd .\build
 cmake ..
 mingw32-make
 .\InOneWeekend.exe > image.ppm
-code image.ppm
+@REM code image.ppm

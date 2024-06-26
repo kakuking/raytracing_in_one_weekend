@@ -2,7 +2,10 @@
 #include "camera.h"
 #include "hittable_list.h"
 #include "sphere.h"
+#include "mesh.h"
 #include "material.h"
+
+#include <chrono>
 
 int main(){
     // World
@@ -55,11 +58,22 @@ int main(){
     auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
 
     world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, material_ground));
-    world.add(make_shared<sphere>(point3(0.0, 0.0, -1.2), 0.5, material_center));
-    world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.2), 0.5, material_left));
-    world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.2), 0.4, material_bubble));
-    world.add(make_shared<sphere>(point3(1.0, 0.0, -1.2), 0.5, material_right));    
 
+    // world.add(make_shared<sphere>(point3(0.0, 0.0, -1.2), 0.5, material_center));
+
+    // world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.2), 0.5, material_left));
+    // world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.2), 0.4, material_bubble));
+
+    // world.add(make_shared<sphere>(point3(1.0, 0.0, -1.2), 0.5, material_right));    
+
+    point3 p1(0.0, 0.0, -1.2), p2(1.0, 0.0, -1.2), p3(1.0, 1.0, -1.2);
+    vec3 n1(-13, -2, -3), n2(-13, -2, -3), n3(-13, -2, -3);
+    vertex3 v1(p1, n1), v2(p2, n2), v3(p3, n3);
+    triangle tri1(v1, v2, v3);
+    std::vector<triangle> tris;
+    tris.push_back(tri1);
+
+    world.add(make_shared<mesh>(tris, material_center));
 
     camera cam(world);
     cam.aspect_ratio = 16.0/9.0;
@@ -71,9 +85,18 @@ int main(){
     cam.lookfrom = point3(13, 2, 3);
     cam.lookat = point3(0, 0, 0);
     cam.vup = vec3(0, 1, 0);
-
+    
     cam.defocus_angle = 0.6;
     cam.focus_dist = 10.0;
 
+    cam.num_threads = 5;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     cam.render(world);
+
+    auto stop = std::chrono::high_resolution_clock::now();
+    
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    std::clog << "Time taken to render with " << cam.num_threads << " threads - " << duration.count() << "ms\n";
 }

@@ -6,6 +6,7 @@
 #include <limits>
 #include <memory>
 #include "interval.h"
+#include <optional>
 
 using std::fabs;
 using std::make_shared;
@@ -34,3 +35,4 @@ inline double random_double(double min, double max) {
 #include "ray.h"
 #include "vec3.h"
 #include "vertex.h"
+#include "triangle.h"
