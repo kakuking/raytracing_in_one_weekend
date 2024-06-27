@@ -56,7 +56,7 @@ int main(){
     auto material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));
     auto material_left = make_shared<dielectric>(1.5);
     auto material_bubble = make_shared<dielectric>(1.0/1.5);
-    auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
+    auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 0.0);
 
     world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, material_ground));
 
@@ -66,9 +66,10 @@ int main(){
     // world.add(make_shared<sphere>(point3(1.0, 0.0, -1.2), 0.5, material_right));    
 
 
+    icosahedron ico(point3(0, 0, 0), 2.5, false);
+    world.add(make_shared<mesh>(ico.generate_icosahedron(), material_right));
 
-    icosahedron ico(point3(0.0, 10.0, -1.2), 0.5, false);
-    world.add(make_shared<mesh>(ico.generate_icosahedron(), material_center));
+    world.add(make_shared<sphere>(point3(-3, 3, 0), 1.5, material_center));
 
     camera cam(world);
     cam.aspect_ratio = 16.0/9.0;
@@ -82,7 +83,7 @@ int main(){
     cam.vup = vec3(0, 1, 0);
     
     cam.defocus_angle = 0.6;
-    cam.focus_dist = 10.0;
+    cam.focus_dist = 13.0;
 
     cam.num_threads = 5;
 
