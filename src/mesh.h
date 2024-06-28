@@ -19,8 +19,8 @@ class mesh: public hittable {
 
         protected:
             std::vector<triangle> tris;
-        private:
             shared_ptr<material> mat;
+        private:
 
         bool brute_force(const ray& r, interval ray_t_init, hit_record& rec) const {
             bool any_hit = false;

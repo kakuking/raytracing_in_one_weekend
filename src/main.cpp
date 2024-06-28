@@ -5,6 +5,7 @@
 #include "mesh.h"
 #include "icosahedron.h"
 #include "material.h"
+#include "cube.h"
 
 #include <chrono>
 
@@ -57,6 +58,7 @@ int main(){
     auto material_left = make_shared<dielectric>(1.5);
     auto material_bubble = make_shared<dielectric>(1.0/1.5);
     auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 0.0);
+    auto material_cube = make_shared<metal>(color(0.8, 0.6, 0.2), 0.5);
 
     world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, material_ground));
 
@@ -66,10 +68,13 @@ int main(){
     // world.add(make_shared<sphere>(point3(1.0, 0.0, -1.2), 0.5, material_right));    
 
 
-    icosahedron ico(point3(0, 0, 0), 2.5, false);
-    world.add(make_shared<mesh>(ico.generate_icosahedron(), material_right));
+    // icosahedron ico(point3(0, 0, 0), 2.5, false);
+    // world.add(make_shared<mesh>(ico.generate_icosahedron(), material_right));
 
-    world.add(make_shared<sphere>(point3(-3, 3, 0), 1.5, material_center));
+    // world.add(make_shared<sphere>(point3(-3, 3, 0), 1.5, material_center));
+
+    cube cub(point3(0, 0, 0), 2.5, point3(1.5, 1.5, 1.5));
+    world.add(make_shared<mesh>(cub.generate(), material_cube));
 
     camera cam(world);
     cam.aspect_ratio = 16.0/9.0;
