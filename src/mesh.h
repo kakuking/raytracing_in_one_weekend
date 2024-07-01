@@ -1,53 +1,37 @@
 #pragma once
 
-#include "rtweekend.h"
 #include "hittable.h"
+
+#include "rtweekend.h"
+#include <vector>
+
 
 class mesh: public hittable {
     public:
+        std::vector<shared_ptr<hittable>> objects;
+
         mesh() {}
-        mesh(std::vector<triangle> tris, shared_ptr<material> mat): tris(tris), mat(mat) {}
-        mesh(triangle tris_array[], size_t count, shared_ptr<material> mat): mat(mat) {
-            tris.resize(count);
-            for (size_t i = 0; i < count; i++)
-                tris.push_back(tris_array[i]);
+        mesh(shared_ptr<hittable> object) { add(object); }
+
+        void clear() {objects.clear();}
+
+        void add(shared_ptr<hittable> object) {
+            objects.push_back(object);
         }
 
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-            return brute_force(r, ray_t, rec);
-        }
+            hit_record temp_rec;
+            bool hit_anything = false;
+            auto closest_so_far = ray_t.max;
 
-        protected:
-            std::vector<triangle> tris;
-            shared_ptr<material> mat;
-        private:
-
-        bool brute_force(const ray& r, interval ray_t_init, hit_record& rec) const {
-            bool any_hit = false;
-            interval ray_t = ray_t_init;
-
-            for(auto& tri: tris) {
-                std::optional<hit_record> vert_opt = tri.ray_triangle_intersection(r);
-
-                if (!vert_opt.has_value())
-                    continue;
-
-                hit_record hit_rec = vert_opt.value();
-
-                if(!ray_t.surrounds(hit_rec.t)){
-                    continue;
+            for(const auto& object: objects){
+                if(object->hit(r, interval(ray_t.min, closest_so_far), temp_rec)) {
+                    hit_anything = true;
+                    closest_so_far = temp_rec.t;
+                    rec = temp_rec;
                 }
-
-                any_hit = true;
-                rec.t = hit_rec.t;
-                rec.p = hit_rec.p;
-                rec.normal = hit_rec.normal;
-                rec.mat = mat;
-
-                ray_t.max = hit_rec.t;
             }
 
-            return any_hit;
+            return hit_anything;
         }
-
 };

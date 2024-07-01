@@ -2,15 +2,29 @@
 
 #include "rtweekend.h"
 #include "hittable.h" 
+#include "material.h"
 
 using coefficients = vec3;
 
-class triangle{
+class triangle: public hittable{
     public:
         vertex3 v1, v2, v3;
+        shared_ptr<material> mat;
 
         triangle() {}
-        triangle(vertex3 v1, vertex3 v2, vertex3 v3): v1(v1), v2(v2), v3(v3) {}
+        triangle(vertex3 v1, vertex3 v2, vertex3 v3, shared_ptr<material> mat): v1(v1), v2(v2), v3(v3), mat(mat) {}
+
+        bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
+            std::optional<hit_record> hit_rec_opt = ray_triangle_intersection(r);
+
+            if(!hit_rec_opt.has_value())
+                return false;
+            
+            rec = hit_rec_opt.value();
+            rec.mat = mat;
+
+            return true;
+        }
 
         coefficients barycentric_of(const vertex3& p) {
             double v1v2p = area_of_triangle(v1, v2, p);
@@ -35,7 +49,7 @@ class triangle{
             if (is_ray_parallel(r))
                 return {};
             
-            std::optional<coefficients> coeff_opt = solve_linear_equations(r);
+            std::optional<coefficients> coeff_opt = find_ray_intersection(r);
 
             // if no solution/solution out of bounds
             if (!coeff_opt.has_value())
@@ -64,7 +78,7 @@ class triangle{
             return dot(cross(v2.position - v1.position, v3.position-v2.position), r.direction()) == 0;
         }
 
-        std::optional<coefficients> solve_linear_equations(const ray& r) const {
+        std::optional<coefficients> find_ray_intersection(const ray& r) const {
             vec3 AB = v2.position - v1.position;
             vec3 AC = v3.position - v1.position;
             vec3 ray_cross_AC = cross(r.direction(), AC);

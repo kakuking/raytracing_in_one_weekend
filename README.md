@@ -16,3 +16,5 @@ Currently uses brute force to go through all triangles
 
 Further improvements that could be made
 - [ ] Better algorithm to check intersection with mesh, beyond brute force
+
+Used the Surface Area Heuristic to create Bounding Volume Heirarchy
