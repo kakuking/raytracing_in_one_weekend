@@ -106,3 +106,7 @@ class triangle: public hittable{
             return {};
         }
 };
+
+inline std::ostream& operator<<(std::ostream& out, const triangle& t) {
+    return out << t.v1 << ", " << t.v2 << ", " << t.v3;
+}

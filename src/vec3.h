@@ -62,7 +62,7 @@ using point3 = vec3;
 // using color3 = vec3;
 
 inline std::ostream& operator<<(std::ostream& out, const vec3& v) {
-    return out << v[0] << ' ' << v[1] << ' ' << v[2];
+    return out << '(' << v[0] << ',' << v[1] << ',' << v[2] << ')';
 }
 
 inline vec3 operator+(const vec3& u, const vec3& v) {

@@ -3,6 +3,8 @@
 #include "hittable_list.h"
 #include "sphere.h"
 #include "material.h"
+#include "bounding_volume.h"
+#include "bounding_volume_heirarchy.h"
 
 #include <chrono>
 
@@ -26,10 +28,28 @@ int main(){
 
     // world.add(make_shared<sphere>(point3(-3, 3, 0), 1.5, material_center));
 
-    vertex3 v1(point3(0, 0, 0), vec3(0, 0, 1));
-    vertex3 v2(point3(0, 1, 0), vec3(0, 0, 1));
-    vertex3 v3(point3(1, 0, 0), vec3(1, 0, 1));
-    world.add(make_shared<triangle>(v1, v2, v3, material_center));
+    vertex3 v1(point3(-5, 0, 0), vec3(0, 0, 1));
+    vertex3 v2(point3(-5, 1, 0), vec3(0, 0, 1));
+    vertex3 v3(point3(-4, 0, 0), vec3(1, 0, 1));
+
+    vertex3 v4(point3(4, 0, 0), vec3(0, 0, 1));
+    vertex3 v5(point3(4, 1, 0), vec3(0, 0, 1));
+    vertex3 v6(point3(5, 0, 0), vec3(1, 0, 1));
+
+    vertex3 v7(point3(-1, 0, 0), vec3(0, 0, 1));
+    vertex3 v8(point3(0, 1, 0), vec3(0, 0, 1));
+    vertex3 v9(point3(1, 0, 0), vec3(1, 0, 1));
+    
+    BoundingVolume root_volume;
+    root_volume.contents.push_back(make_shared<triangle>(v1, v2, v3, material_center));
+    root_volume.contents.push_back(make_shared<triangle>(v4, v5, v6, material_center));
+    root_volume.contents.push_back(make_shared<triangle>(v7, v8, v9, material_center));
+    root_volume.set_up_corners();
+
+    Bounding_Volume_Heirarchy BVH(2, root_volume);
+
+    // world.add(make_shared<triangle>(v1, v2, v3, material_center));
+    // world.add(make_shared<triangle>(v4, v5, v6, material_center));
 
     camera cam(world);
     cam.aspect_ratio = 16.0/9.0;
@@ -38,7 +58,7 @@ int main(){
     cam.max_depth = 20;
 
     cam.vfov = 20;
-    cam.lookfrom = point3(20, 20, 20);
+    cam.lookfrom = point3(0, 0, 20);
     cam.lookat = point3(0, 0, 0);
     cam.vup = vec3(0, 1, 0);
     
