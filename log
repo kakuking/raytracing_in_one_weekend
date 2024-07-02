@@ -1,0 +1,7 @@
+Depth - 2 100 triangles; time = 16394 ms
+Depth - 3 100 triangles; time = 14776 ms
+Depth - 4 100 triangles; time = 15714ms
+Depth - 5 100 triangles; time = 17316ms
+Depth - 5 1000 triangles; time = 98373ms
+Depth - 1 1000 triangles; time = 271788ms
+Depth - 4 1000 triangles; time = 104486ms
