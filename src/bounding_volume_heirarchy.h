@@ -15,7 +15,7 @@ struct BVH_node {
 
         left = new BVH_node();
         right = new BVH_node();
-        bool split_possible = volume.splitBoundingVolume(left->volume, right->volume, 4);
+        bool split_possible = volume.splitBoundingVolume(&(left->volume), &(right->volume), 4);
 
         if (!split_possible){
             delete left;

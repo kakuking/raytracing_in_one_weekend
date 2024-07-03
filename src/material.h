@@ -16,9 +16,9 @@ class material{
 
 class lambertian: public material {
     private:
-        color albedo;
 
     public:
+        color albedo;
         lambertian(const color& albedo): albedo(albedo) {}
 
         bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override {
@@ -32,6 +32,10 @@ class lambertian: public material {
             return true;
         }
 };
+
+inline std::ostream& operator<<(std::ostream& out, const lambertian& t) {
+    return out << t.albedo;
+}
 
 class metal: public material {
     private:

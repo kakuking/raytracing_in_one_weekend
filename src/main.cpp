@@ -19,39 +19,29 @@ int main(){
     auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 0.0);
     auto material_cube = make_shared<metal>(color(0.8, 0.6, 0.2), 0.5);
 
-    int num_triangles = 250;
+    int num_triangles = 20;
     point3 bottom_left_limit = point3(-5, -5, -5), top_right_limit = point3(5, 5, 5);
 
     BoundingVolume root_volume;
 
     for (size_t i = 0; i < num_triangles; i++)
-    {
+    {   
+        auto mat = make_shared<lambertian>(vec3::random());
+
         point3 first = point3::random(bottom_left_limit.x(), top_right_limit.x());
         first[2] = 0;
+        point3 third = point3::random(bottom_left_limit.x(), top_right_limit.x());
+        third[2] = 0;
         vertex3 v1 = vertex3(first, vec3(0, 0, 1));
         vertex3 v2 = vertex3(first + random_in_unit_disk(), vec3(0, 0, 1));
-        vertex3 v3 = vertex3(first + v2.position + point3(0, 0, random_double(-1, 1)), vec3(0, 0, 1));
+        vertex3 v3 = vertex3(third, vec3(0, 0, 1));
 
-        root_volume.contents.push_back(make_shared<triangle>(v1, v2, v3, material_center));
+        root_volume.contents.push_back(make_shared<triangle>(v1, v2, v3, mat));
     }
 
-    // vertex3 v1 = vertex3(point3(-1, 0, 0), vec3(0, 0, 1));
-    // vertex3 v2 = vertex3(point3(0, 1, 0), vec3(0, 0, 1));
-    // vertex3 v3 = vertex3(point3(1, 0, 0), vec3(0, 0, 1));
-
-    // vertex3 v4 = vertex3(point3(-4, 0, 0), vec3(0, 0, 1));
-    // vertex3 v5 = vertex3(point3(-3, 1, 0), vec3(0, 0, 1));
-    // vertex3 v6 = vertex3(point3(-2, 0, 0), vec3(0, 0, 1));
-
-    // vertex3 v7 = vertex3(point3(2, 0, 0), vec3(0, 0, 1));
-    // vertex3 v8 = vertex3(point3(3, 1, 0), vec3(0, 0, 1));
-    // vertex3 v9 = vertex3(point3(4, 0, 0), vec3(0, 0, 1));
-
-    // root_volume.contents.push_back(make_shared<triangle>(v1, v2, v3, material_center));
-    // root_volume.contents.push_back(make_shared<triangle>(v4, v5, v6, material_center));
-    // root_volume.contents.push_back(make_shared<triangle>(v7, v8, v9, material_center));
-        
     root_volume.set_up_corners();
+    // root_volume.bottom_left = point3(-5, -5, -5);
+    // root_volume.top_right = point3(5, 5, 5);
 
     int depth = 5;
     shared_ptr<Bounding_Volume_Heirarchy> BVH = make_shared<Bounding_Volume_Heirarchy>(depth, root_volume);

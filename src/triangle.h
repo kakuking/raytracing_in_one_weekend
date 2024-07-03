@@ -108,5 +108,5 @@ class triangle: public hittable{
 };
 
 inline std::ostream& operator<<(std::ostream& out, const triangle& t) {
-    return out << t.v1 << ", " << t.v2 << ", " << t.v3;
+    return out << t.v1 << ", " << t.v2 << ", " << t.v3; //" color - (" << t.mat;
 }
